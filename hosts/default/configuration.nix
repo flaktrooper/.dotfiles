@@ -2,12 +2,13 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      inputs.home-manager.nixosModules.default
     ];
 
   # Bootloader.
@@ -82,9 +83,8 @@
   users.users.mcrn = {
     isNormalUser = true;
     description = "mcrn";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [
-      zsh
       libsForQt5.kio-gdrive
       brave
       firefox
@@ -100,6 +100,14 @@
     ];
   };
 
+  home-manager = {
+    # also pass inputs to home-manager modules
+    extraSpecialArgs = {inherit inputs;};
+    users = {
+      "mcrn" = import ./home.nix;
+    };
+};
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -108,7 +116,11 @@
   environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #  wget
+     zsh
+     zsh-powerlevel10k
+     meslo-lgs-nf
      neovim
+     tmux
      git
      docker
      hyprland
@@ -141,5 +153,13 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.11"; # Did you read the comment?
 
+  ### Custom
+
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  programs.zsh.promptInit = "source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+  
+  services.yubikey-agent.enable = true;
+  hardware.bluetooth.enable = true; # enables support for Bluetooth
+  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
+
 }
