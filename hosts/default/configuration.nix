@@ -79,6 +79,7 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
+  users.defaultUserShell = pkgs.zsh;
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.mcrn = {
     isNormalUser = true;
@@ -96,7 +97,9 @@
       libreoffice
       protonmail-bridge
       btop
+      htop
       discord
+      telegram-desktop
     ];
   };
 
@@ -116,14 +119,17 @@
   environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #  wget
-     zsh
-     zsh-powerlevel10k
-     meslo-lgs-nf
-     neovim
-     tmux
-     git
-     docker
-     hyprland
+    zsh
+    zsh-powerlevel10k
+    neovim
+    tmux
+    git
+    docker
+    hyprland
+  ];
+
+  fonts.packages = with pkgs; [
+    meslo-lgs-nf
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -156,6 +162,7 @@
   ### Custom
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  programs.zsh.enable = true;
   programs.zsh.promptInit = "source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
   
   services.yubikey-agent.enable = true;
