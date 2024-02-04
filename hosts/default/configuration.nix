@@ -117,8 +117,6 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
     zsh
     zsh-powerlevel10k
     neovim
@@ -126,6 +124,7 @@
     git
     docker
     hyprland
+    solaar
   ];
 
   fonts.packages = with pkgs; [
@@ -165,8 +164,12 @@
   programs.zsh.enable = true;
   programs.zsh.promptInit = "source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
   
+  # Enable yubikey agent
   services.yubikey-agent.enable = true;
+  # Bluetooth
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
+  # Required for solaar
+  hardware.logitech.wireless.enable = true;
 
 }

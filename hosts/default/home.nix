@@ -15,9 +15,13 @@
   # release notes.
   home.stateVersion = "23.11"; # Please read the comment before changing.
 
+  # Enable font handling
+  fonts.fontconfig.enable = true;
+
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = [
+    (pkgs.nerdfonts.override { fonts = [ "FiraCode" "Meslo" ]; })
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello
@@ -43,6 +47,8 @@
     # # the Nix store. Activating the configuration will then make '~/.screenrc' a
     # # symlink to the Nix store copy.
     # ".screenrc".source = dotfiles/screenrc;
+    ".zshrc".source = dotfiles/zshrc;
+    ".p10k.zsh".source = dotfiles/p10k.zsh;
 
     # # You can also set the file content immediately.
     # ".gradle/gradle.properties".text = ''
