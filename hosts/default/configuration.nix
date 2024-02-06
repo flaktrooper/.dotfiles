@@ -123,8 +123,18 @@
     tmux
     git
     docker
-    hyprland
     solaar
+    waybar
+    mako
+    libnotify
+    swww
+    kitty
+    wezterm
+    rofi-wayland
+    networkmanagerapplet
+    grim
+    slurp
+    wl-clipboard
   ];
 
   fonts.packages = with pkgs; [
@@ -160,9 +170,60 @@
 
   ### Custom
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  programs.zsh.enable = true;
-  programs.zsh.promptInit = "source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+    substituters = ["https://hyprland.cachix.org"];
+    trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+  };
+
+  programs.zsh = {
+    enable = true;
+    promptInit = "source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+  };
+
+  programs.hyprland = {
+    enable = true;
+    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+    xwayland.enable = true;
+  };
+
+  #xdg.portal.enable = true;
+  #xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-gtk ];
+
+  # Power/thermal management
+  services.thermald.enable = true;
+  #services.tlp = {
+  #  enable = true;
+  #  settings = {
+  #    CPU_SCALING_GOVERNOR_ON_AC = "performance";
+  #    CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+
+  #    CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+  #    CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+
+  #    CPU_MIN_PERF_ON_AC = 0;
+  #    CPU_MAX_PERF_ON_AC = 100;
+  #    CPU_MIN_PERF_ON_BAT = 0;
+  #    CPU_MAX_PERF_ON_BAT = 20;
+
+  #    START_CHARGE_THRESH_BAT0 = 40; # 40 and bellow it starts to charge
+  #    STOP_CHARGE_THRESH_BAT0 = 80; # 80 and above it stops charging
+
+  #  };
+  #};
+  services.auto-cpufreq = {
+    enable = true;
+    settings = {
+      battery = {
+        governor = "powersave";
+	turbo = "never";
+      };
+      charger = {
+        governor = "performance";
+	turbo = "auto";
+      };
+    };
+  };
   
   # Enable yubikey agent
   services.yubikey-agent.enable = true;
